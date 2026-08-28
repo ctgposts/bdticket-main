@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bd-ticketpro
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_PATH: /app/data/bd-ticketpro.db
+      JWT_SECRET: change-me-to-a-long-random-secret
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ChangeThisStrongPassword123!
+      ALLOWED_ORIGINS: http://localhost:3000
+    volumes:
+      - app_data:/app/data
+
+volumes:
+  app_data:
