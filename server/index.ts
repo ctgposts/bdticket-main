@@ -110,6 +110,15 @@ export function createServer() {
       timestamp: new Date().toISOString(),
       version: "1.0.0",
     });
+
+    app.get("/api/health", (_req, res) => {
+      res.json({
+        success: true,
+        message: "BD TicketPro API is healthy",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || "development",
+      });
+    });
   });
 
   // API Routes

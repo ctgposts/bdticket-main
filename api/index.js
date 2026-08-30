@@ -65,7 +65,9 @@ export default async function handler(req, res) {
       message: "Internal server error",
       error:
         process.env.NODE_ENV === "development" ? error.message : "Server error",
-      details: error.stack ? error.stack.split("\n").slice(0, 5) : [],
+      ...(process.env.NODE_ENV === "development" && {
+        details: error.stack ? error.stack.split("\n").slice(0, 5) : [],
+      }),
       timestamp: new Date().toISOString(),
     });
   }

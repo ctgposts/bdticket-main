@@ -27,6 +27,7 @@ const dbPath = resolveDatabasePath();
 
 mkdirSync(dirname(dbPath), { recursive: true });
 
+export const databasePath = dbPath;
 export const db = new Database(dbPath);
 
 // Enable foreign keys
@@ -351,12 +352,12 @@ export function seedDatabase() {
     }
 
     if (isProduction && !allowDemoUsers) {
-      const adminUsername = process.env.ADMIN_USERNAME || "admin";
-      const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+      const adminUsername = process.env.ADMIN_USERNAME;
+      const adminPassword = process.env.ADMIN_PASSWORD;
 
       if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
-        console.warn(
-          "ADMIN_USERNAME / ADMIN_PASSWORD were not set. Falling back to default admin credentials for Vercel compatibility. Change this immediately in production.",
+        throw new Error(
+          "Production deployment requires ADMIN_USERNAME and ADMIN_PASSWORD environment variables.",
         );
       }
 

@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { UserRepository, ActivityLogRepository } from "../database/models";
 import { authenticate, requirePermission } from "../middleware/auth";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 
 const router = Router();
 
@@ -312,7 +313,6 @@ router.put("/profile/password", async (req: Request, res: Response) => {
     }
 
     // Update password
-    const bcrypt = require("bcryptjs");
     const newPasswordHash = bcrypt.hashSync(newPassword, 10);
 
     UserRepository.update(req.user!.id, { password_hash: newPasswordHash });

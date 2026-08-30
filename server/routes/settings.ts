@@ -12,6 +12,7 @@ import { z } from "zod";
 import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
+import { databasePath } from "../database/schema";
 
 const router = Router();
 
@@ -413,7 +414,7 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       // Create backup directory if it doesn't exist
-      const backupDir = path.join(process.cwd(), "backups");
+      const backupDir = path.join(path.dirname(databasePath), "backups");
       if (!fs.existsSync(backupDir)) {
         fs.mkdirSync(backupDir, { recursive: true });
       }
@@ -423,9 +424,8 @@ router.post(
       const backupFile = path.join(backupDir, `backup-${timestamp}.db`);
 
       // Copy the database file
-      const dbPath = path.join(process.cwd(), "bd-ticketpro.db");
-      if (fs.existsSync(dbPath)) {
-        fs.copyFileSync(dbPath, backupFile);
+      if (fs.existsSync(databasePath)) {
+        fs.copyFileSync(databasePath, backupFile);
 
         // Log activity
         ActivityLogRepository.create({
@@ -490,9 +490,8 @@ async function getDiskUsage(): Promise<string> {
 
 async function getDatabaseSize(): Promise<string> {
   try {
-    const dbPath = path.join(process.cwd(), "bd-ticketpro.db");
-    if (fs.existsSync(dbPath)) {
-      const stats = fs.statSync(dbPath);
+    if (fs.existsSync(databasePath)) {
+      const stats = fs.statSync(databasePath);
       return formatBytes(stats.size);
     }
     return "Unknown";
@@ -503,7 +502,7 @@ async function getDatabaseSize(): Promise<string> {
 
 function getLastBackupTime(): string {
   try {
-    const backupDir = path.join(process.cwd(), "backups");
+    const backupDir = path.join(path.dirname(databasePath), "backups");
 
     if (!fs.existsSync(backupDir)) {
       return "Never";
