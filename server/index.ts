@@ -26,16 +26,22 @@ export function createServer() {
     console.error("Database initialization error:", error);
   }
 
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  const allowedOrigins = (
+    process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGINS || ""
+  )
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+
+  const vercelOrigin =
+    process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`;
 
   const defaultOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
+    ...(vercelOrigin ? [vercelOrigin] : []),
   ];
 
   app.use(
@@ -62,7 +68,17 @@ export function createServer() {
           typeof origin === "string" &&
           /^(https?:\/\/)(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-        if (!origin || allowedList.includes(origin) || sameHostOrigin || localhostPreviewOrigin) {
+        const vercelPreviewOrigin =
+          typeof origin === "string" &&
+          /^(https?:\/\/)[a-z0-9-]+(?:\.[a-z0-9-]+)*\.vercel\.app$/i.test(origin);
+
+        if (
+          !origin ||
+          allowedList.includes(origin) ||
+          sameHostOrigin ||
+          localhostPreviewOrigin ||
+          vercelPreviewOrigin
+        ) {
           callback(null, true);
           return;
         }
