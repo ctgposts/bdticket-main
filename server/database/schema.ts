@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import { join, dirname } from "path";
-import { mkdirSync, existsSync } from "fs";
+import { mkdirSync, existsSync, copyFileSync } from "fs";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,11 +12,9 @@ const resolveDatabasePath = () => {
 
   if (process.env.NODE_ENV === "production") {
     const fallbackProdPath = "/tmp/bd-ticketpro.db";
-    if (!existsSync(fallbackProdPath)) {
-      const repoDbPath = join(process.cwd(), "bd-ticketpro.db");
-      if (existsSync(repoDbPath)) {
-        return repoDbPath;
-      }
+    const repoDbPath = join(process.cwd(), "bd-ticketpro.db");
+    if (!existsSync(fallbackProdPath) && existsSync(repoDbPath)) {
+      copyFileSync(repoDbPath, fallbackProdPath);
     }
     return fallbackProdPath;
   }
