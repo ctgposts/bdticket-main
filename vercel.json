@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/spa",
-  "installCommand": "npm install",
+  "installCommand": "npm install --include=dev",
   "functions": {
     "api/index.js": {
       "runtime": "@vercel/node@3.1.5",
@@ -27,7 +27,7 @@
   },
   "build": {
     "env": {
-      "NODE_VERSION": "20"
+      "NODE_VERSION": "24"
     }
   },
   "routes": [
