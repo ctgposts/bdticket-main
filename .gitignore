@@ -120,6 +120,8 @@ Thumbs.db
 
 # BD TicketPro specific
 bd-ticketpro.db*
+!bd-ticketpro.db
+!bd-ticketpro.db-*
 uploads/
 storage/
 backups/
