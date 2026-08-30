@@ -9,6 +9,8 @@ const port = process.env.PORT || 3000;
 const __dirname = import.meta.dirname;
 const distPath = path.join(__dirname, "../spa");
 
+export { createServer };
+
 // Serve static files
 app.use(express.static(distPath));
 
@@ -22,11 +24,13 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Fusion Starter server running on port ${port}`);
-  console.log(`📱 Frontend: http://localhost:${port}`);
-  console.log(`🔧 API: http://localhost:${port}/api`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`🚀 Fusion Starter server running on port ${port}`);
+    console.log(`📱 Frontend: http://localhost:${port}`);
+    console.log(`🔧 API: http://localhost:${port}/api`);
+  });
+}
 
 // Graceful shutdown
 process.on("SIGTERM", () => {

@@ -14,6 +14,7 @@ const resolveDatabasePath = () => {
     const fallbackProdPath = "/tmp/bd-ticketpro.db";
     const repoDbPath = join(process.cwd(), "bd-ticketpro.db");
     if (!existsSync(fallbackProdPath) && existsSync(repoDbPath)) {
+      mkdirSync(dirname(fallbackProdPath), { recursive: true });
       copyFileSync(repoDbPath, fallbackProdPath);
     }
     return fallbackProdPath;
