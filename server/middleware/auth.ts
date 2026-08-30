@@ -71,7 +71,9 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   }
 
   // Get user from database
-  const user = UserRepository.findById(payload.userId);
+  const user =
+    UserRepository.findById(payload.userId) ||
+    UserRepository.findByUsername(payload.username);
   if (!user || user.status !== "active") {
     return res.status(401).json({
       success: false,
